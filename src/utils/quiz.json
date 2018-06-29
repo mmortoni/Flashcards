@@ -1,0 +1,62 @@
+{
+    "byId": {
+        "1BTe-rXasDxGteIWyRXq": {
+            "id": "1BTe-rXasDxGteIWyRXq",
+            "title": "HTML",
+            "cardDeck": [
+                "yBeP9masU-ynIJEYVWba",
+                "a1yD7QcOd505Toxp6_yi",
+                "fom2SpV-xWGjjNov-Wha",
+                "9cYO4XOolSLyK_6U9CaD",
+                "awfXF2fSzaSxN9lL5itK",
+                "JDqOlaSCM6uAobRYh9Xo",
+                "-svMGr8t8Hr7LAj_15BM",
+                "BpgeqcSwGVjaKEuxTn8v",
+                "-3X3iKhEqM9bZp0bpDgw",
+                "IfEhccwC5gA2mZCwQfWo",
+                "D4gWGsw8z4rMAfZMfS_N",
+                "RBDA0vMnrpanMHLyEQiN",
+                "t7uX558V8ro2FbW1MU6H",
+                "M3hVQX6iNtQeCXKDTFJP",
+                "HnAY2Rxh2OxFl_HBfJuT",
+                "DCBGOYPzIdiY0wVvatBk",
+                "nXFBuYaHIsBK8WdD3BMN",
+                "v5byJkyp1yNW4TTXB966",
+                "amMlyWy_mQGY5vFQnqUW",
+                "UmjUpnDqXJ4bPqgHOZg7",
+                "BGHzyIS40-mwfVTgnVB0",
+                "864--vyE2_zD_5aFzq3j",
+                "Vfl-FO3XHnMYWirDZJWY",
+                "FFdY0HwB2EFx5Bd3JhBa",
+                "aqrMHwG34krJU8Mx-hCG"
+            ]
+        },
+        "Kbec45t92nwp3Z_D7i9J": {
+            "id": "Kbec45t92nwp3Z_D7i9J",
+            "title": "JavaScript",
+            "cardDeck": []
+        },
+        "Ef_uLKWpz1_lqB6fj0y7": {
+            "id": "Ef_uLKWpz1_lqB6fj0y7",
+            "title": "CSS",
+            "cardDeck": []
+        },
+        "WMp0iowDiMQ1u9FhSTPo": {
+            "id": "WMp0iowDiMQ1u9FhSTPo",
+            "title": "JSON",
+            "cardDeck": []
+        },
+        "6Z-1Df6F9bb2Tru7OfQE": {
+            "id": "6Z-1Df6F9bb2Tru7OfQE",
+            "title": "XML",
+            "cardDeck": []
+        }
+    },
+    "allIds": [
+        "1BTe-rXasDxGteIWyRXq",
+        "Kbec45t92nwp3Z_D7i9J",
+        "Ef_uLKWpz1_lqB6fj0y7",
+        "WMp0iowDiMQ1u9FhSTPo",
+        "6Z-1Df6F9bb2Tru7OfQE"
+    ]
+}
