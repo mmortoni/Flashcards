@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+
 import {
     Container,
     Header,
@@ -31,13 +32,14 @@ class DeckScreen extends Component {
         await this.props.getAllDeckData({ where: { parentId: this.props.navigation.state.params.quiz.id } });
     }
   
-    async handleClick(navigation, quiz) {
+    async handleClick(navigation, quiz, cardDeck) {
         if(navigation == 'Home') {
             await this.props.getAllQuizData();
         }
 
         this.props.navigation.navigate(navigation, {
             quiz: quiz,
+            cardDeck: cardDeck,
         });
     }
 
@@ -71,7 +73,7 @@ class DeckScreen extends Component {
                     <Grid>
                         <Col>
                             <Row>
-                                <Button small full transparent onPress={() => { this.handleClick('Card', quiz); }}>
+                                <Button small full transparent onPress={() => { this.handleClick('Card', quiz, []); }}>
                                     <Text>New Question</Text>
                                 </Button>
                             </Row>
@@ -79,12 +81,12 @@ class DeckScreen extends Component {
                         <Col>
                             <Row>
                                 {hasCardDeck &&
-                                    <Button small full transparent onPress={() => { this.handleClick('Quiz', quiz); }}>
+                                    <Button small full transparent onPress={() => { this.handleClick('StartQuiz', quiz, cardDeck); }}>
                                         <Text>Start Quiz</Text>
                                     </Button>
                                 }
                                 {!hasCardDeck &&
-                                    <Button small full disabled transparent onPress={() => { this.handleClick('Quiz', quiz); }}>
+                                    <Button small full disabled transparent onPress={() => { this.handleClick('StartQuiz', quiz, cardDeck); }}>
                                         <Text>Start Quiz</Text>
                                     </Button>
                                 }
@@ -92,7 +94,7 @@ class DeckScreen extends Component {
                         </Col>
                         <Col>
                             <Row>
-                                <Button small full transparent onPress={() => { this.handleClick('Home', quiz); }}>
+                                <Button small full transparent onPress={() => { this.handleClick('Home', quiz, []); }}>
                                     <Text>Home</Text>
                                 </Button>
                             </Row>
@@ -103,7 +105,7 @@ class DeckScreen extends Component {
         );
     }
 }
-// ??????????????????????????????????????
+
 const mapStateToProps = (state) => {
     return {
       pending: state.ui.pending,
