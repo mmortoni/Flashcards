@@ -1,3 +1,5 @@
+'use strict';
+
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -29,6 +31,7 @@ class StartQuizScreen extends Component {
         super(props);
 
         this.state = { index: 0, question: '', correct: 0, lastQuestionAnswered: false }
+        this.question = Array(this.props.navigation.state.params.cardDeck.length).fill(0);
 
         this.handleClick = this.handleClick.bind(this);
     }
@@ -43,7 +46,7 @@ class StartQuizScreen extends Component {
         if (this.state.index < cardDeck.length - 1) {
             this.setState({ index: this.state.index + 1 })
 
-            if(this.state.question == 'Correct') this.setState({ correct: this.state.correct + 1 })
+            //if(this.state.question == 'Correct') this.setState({ correct: this.state.correct + 1 })
         }
     }
 
@@ -56,7 +59,11 @@ class StartQuizScreen extends Component {
 
     render() {
         const { quiz, cardDeck } = this.props.navigation.state.params;
-        const score = Math.round((this.state.correct / cardDeck.length) * 100) ;
+        //        const score = Math.round((this.state.correct / cardDeck.length) * 100) ;
+        const score = this.question.reduce(
+            (sum, value) => sum += value == 0 ? 1 : 0,
+            0) / (this.question.length / 100);
+
 
         return (
             <Container>
@@ -86,7 +93,8 @@ class StartQuizScreen extends Component {
                                                 title: cardDeck[this.state.index].answer
                                             },
                                             buttonIndex => {
-                                                this.setState({ question: BUTTONS[buttonIndex] });
+                                                //this.setState({ question: BUTTONS[buttonIndex] });
+                                                this.question[this.state.index] = buttonIndex;
                                                 this.setState({ lastQuestionAnswered: this.state.index + 1 == cardDeck.length });
                                             }
                                         )
