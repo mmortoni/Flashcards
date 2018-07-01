@@ -45,6 +45,13 @@ class StartQuizScreen extends Component {
         }
     }
 
+    async exitStartQuizScreen(quiz) {
+        await this.props.getAllDeckData({ where: { parentId: quiz.id } });
+        this.props.navigation.navigate('Deck', {
+            quiz: quiz,
+        });
+    }
+
     render() {
         const { quiz, cardDeck } = this.props.navigation.state.params;
 
@@ -102,13 +109,13 @@ class StartQuizScreen extends Component {
                         {this.state.lastQuestionAnswered &&
                             <CardItem style={{ justifyContent: 'space-between' }}>
                                 <Left>
-                                    <Button transparent>
+                                    <Button transparent onPress={() => this.setState({ index: 0, lastQuestionAnswered: false })}>
                                         <Text>Restart Quiz</Text>
                                         <Icon active name="ios-rewind" />
                                     </Button>
                                 </Left>
                                 <Right>
-                                    <Button transparent>
+                                    <Button transparent onPress={() => { this.exitStartQuizScreen(quiz); }}>
                                         <Text>Back to Deck</Text>
                                         <Icon active name="ios-skip-backward" />
                                     </Button>
