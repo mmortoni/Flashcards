@@ -17,16 +17,18 @@ import {
     Text,
     Right,
     Left,
-    Picker,
+    ActionSheet,
 } from 'native-base';
 
 import * as Actions from '../../store/actions/index';
+
+const BUTTONS = ['Correct', 'Incorrect'];
 
 class StartQuizScreen extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { index: 0, question: 'correct' }
+        this.state = { index: 0, question: '', lastQuestionAnswered: false }
 
         this.handleClick = this.handleClick.bind(this);
     }
@@ -37,6 +39,7 @@ class StartQuizScreen extends Component {
 
     async handleClick() {
         const { cardDeck } = this.props.navigation.state.params;
+
         if (this.state.index < cardDeck.length - 1) {
             this.setState({ index: this.state.index + 1 })
         }
@@ -47,13 +50,14 @@ class StartQuizScreen extends Component {
 
         return (
             <Container>
+                <ActionSheet ref={(c) => { ActionSheet.actionsheetInstance = c; }} />
                 <Header>
                     <Body>
                         <Title>{quiz.title + ' - ' + (this.state.index + 1) + '/' + cardDeck.length} cards</Title>
                     </Body>
                 </Header>
 
-                <Content>
+                <Content padder>
                     <Card>
                         <CardItem>
                             <Body>
@@ -63,52 +67,59 @@ class StartQuizScreen extends Component {
                     </Card>
                     <Card>
                         <CardItem>
-                            <Body>
-                                <Text>{cardDeck[this.state.index].answer}</Text>
-                            </Body>
-                        </CardItem>
-                        <CardItem>
-                            <Picker
-                                selectedValue={this.state.question}
-                                onValueChange={(itemValue, itemIndex) => this.setState({ question: itemValue })}>
-                                <Picker.Item label="Correct" value="correct" />
-                                <Picker.Item label="Incorrect" value="incorrect" />
-                            </Picker>
-                        </CardItem>
-                    </Card>
-                    <Card>
-                        <CardItem>
-                            <Body>
-                                <Text>Score - ios-stats</Text>
-                            </Body>
-                        </CardItem>
-                    </Card>
-                    <Card>
-                        <CardItem style={{ justifyContent: 'space-between' }}>
                             <Left>
-                                <Button transparent>
-                                    <Text>Restart Quiz</Text>
-                                    <Icon active name="ios-rewind" />
+                                <Button transparent
+                                    onPress={() =>
+                                        ActionSheet.show(
+                                            {
+                                                options: BUTTONS,
+                                                title: cardDeck[this.state.index].answer
+                                            },
+                                            buttonIndex => {
+                                                this.setState({ question: BUTTONS[buttonIndex] });
+                                                this.setState({ lastQuestionAnswered: this.state.index + 1 == cardDeck.length });
+                                            }
+                                        )
+                                    }
+                                >
+                                    <Text>Show Answer</Text>
+                                    <Icon name='ios-eye' />
                                 </Button>
                             </Left>
-                            <Right>
-                                <Button transparent>
-                                    <Text>Back to Deck</Text>
-                                    <Icon active name="ios-skip-backward" />
-                                </Button>
-                            </Right>
                         </CardItem>
+                    </Card>
+                    <Card>
+                        {this.state.lastQuestionAnswered &&
+                            <CardItem>
+                                <Body>
+                                    <Text>Score</Text>
+                                    <Icon active name="ios-stats" />
+                                </Body>
+                            </CardItem>
+                        }
+                    </Card>
+                    <Card>
+                        {this.state.lastQuestionAnswered &&
+                            <CardItem style={{ justifyContent: 'space-between' }}>
+                                <Left>
+                                    <Button transparent>
+                                        <Text>Restart Quiz</Text>
+                                        <Icon active name="ios-rewind" />
+                                    </Button>
+                                </Left>
+                                <Right>
+                                    <Button transparent>
+                                        <Text>Back to Deck</Text>
+                                        <Icon active name="ios-skip-backward" />
+                                    </Button>
+                                </Right>
+                            </CardItem>
+                        }
                     </Card>
                 </Content>
 
                 <Footer >
                     <FooterTab>
-                        <Left>
-                            <Button onPress={() => { this.handleClick(); }}>
-                                <Text>Show Answer</Text>
-                                <Icon name='ios-eye' />
-                            </Button>
-                        </Left>
                         <Right>
                             <Button onPress={() => { this.handleClick(); }}>
                                 <Text>Next</Text>
