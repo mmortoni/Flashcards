@@ -28,7 +28,7 @@ class StartQuizScreen extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { index: 0, question: '', lastQuestionAnswered: false }
+        this.state = { index: 0, question: '', correct: 0, lastQuestionAnswered: false }
 
         this.handleClick = this.handleClick.bind(this);
     }
@@ -42,6 +42,8 @@ class StartQuizScreen extends Component {
 
         if (this.state.index < cardDeck.length - 1) {
             this.setState({ index: this.state.index + 1 })
+
+            if(this.state.question == 'Correct') this.setState({ correct: this.state.correct + 1 })
         }
     }
 
@@ -54,6 +56,7 @@ class StartQuizScreen extends Component {
 
     render() {
         const { quiz, cardDeck } = this.props.navigation.state.params;
+        const score = Math.round((this.state.correct / cardDeck.length) * 100) ;
 
         return (
             <Container>
@@ -101,6 +104,9 @@ class StartQuizScreen extends Component {
                                 <Body>
                                     <Text>Score</Text>
                                     <Icon active name="ios-stats" />
+
+                                    <Text>Well done—you've worked very hard!</Text>
+                                    <Text>Your score is: {score}%</Text>
                                 </Body>
                             </CardItem>
                         }
@@ -109,7 +115,7 @@ class StartQuizScreen extends Component {
                         {this.state.lastQuestionAnswered &&
                             <CardItem style={{ justifyContent: 'space-between' }}>
                                 <Left>
-                                    <Button transparent onPress={() => this.setState({ index: 0, lastQuestionAnswered: false })}>
+                                    <Button transparent onPress={() => this.setState({ index: 0, correct: 0, lastQuestionAnswered: false })}>
                                         <Text>Restart Quiz</Text>
                                         <Icon active name="ios-rewind" />
                                     </Button>
