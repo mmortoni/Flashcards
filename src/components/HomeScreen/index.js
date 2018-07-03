@@ -20,12 +20,17 @@ import {
 
 import * as Actions from '../../store/actions/index';
 
+const ANIMATION_LOOP = 5;
+const ANIMATION_DURATION = 1000;
+
 export class HomeScreen extends React.Component {
   constructor(props) {
     super(props)
 
-    this.state = { clicked: true }
     this.animatedValue = new Animated.Value(0)
+    this.state = {
+      opacity: this.animatedValue.interpolate({ inputRange: [1, 1], outputRange: [1, 1] })
+    };
 
     this.handleClick = this.handleClick.bind(this)
     this.animate = this.animate.bind(this);
@@ -36,13 +41,15 @@ export class HomeScreen extends React.Component {
   }
 
   handleClick(quiz) {
-    this.animate(5);
+    this.setState({ opacity: this.animatedValue.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0, 1, 0] }) });
+    this.animate(ANIMATION_LOOP);
 
     setTimeout(() => {
+      this.setState({ opacity: this.animatedValue.interpolate({ inputRange: [1, 1], outputRange: [1, 1] }) });
       this.props.navigation.navigate('Deck', {
         quiz: quiz,
       });
-    }, 5000);
+    }, ANIMATION_LOOP * ANIMATION_DURATION);
   }
 
   animate(loop) {
@@ -53,7 +60,7 @@ export class HomeScreen extends React.Component {
         this.animatedValue,
         {
           toValue: 1,
-          duration: 1000,
+          duration: ANIMATION_DURATION,
           easing: Easing.linear
         }
       ).start(() => this.animate(loop))
@@ -66,16 +73,6 @@ export class HomeScreen extends React.Component {
     if (pending) return <Text>Loading...</Text>
 
     const quiz = Object.entries(data).map(q => { return { id: q[1].id, title: q[1].title, cards: q[1].cardDeck.length } })
-
-    const opacity = this.animatedValue.interpolate({
-      inputRange: [0, 0.5, 1],
-      outputRange: [0, 1, 0]
-    })
-
-    const opacityX = this.animatedValue.interpolate({
-      inputRange: [0, 0.5, 1],
-      outputRange: [0, 1, 0]
-    })
 
     return (
       <Container>
@@ -95,8 +92,8 @@ export class HomeScreen extends React.Component {
 
         <Content>
           <List dataArray={quiz} renderRow={(q) =>
-            <Animated.View style={{ opacity }}>
-              <ListItem style={{ marginLeft: 0, paddingLeft: 15, backgroundColor: 'powderblue' }} button={true} onPress={() => { this.handleClick(q) }}>
+            <Animated.View style={{ opacity: this.state.opacity }}>
+              <ListItem style={{ marginLeft: 0, paddingLeft: 15 }} button={true} onPress={() => { this.handleClick(q) }}>
                 <Text>{q.title + ' - ' + q.cards} cards</Text>
               </ListItem>
             </Animated.View>
