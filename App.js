@@ -13,6 +13,7 @@ const cardDeckData = require('./src/utils/cardDeck.json')
 const store = createStore(rootReducer, applyMiddleware(apiMiddleware))
 
 import StoreDB from './src/utils/storeDB'
+import { setNotification } from './src/utils/notifications'
 import QuizNavigator from './src/QuizNavigator/index'
 
 const storeDB = new StoreDB({
@@ -23,7 +24,7 @@ window.DB = {
   'quiz': storeDB.model('quiz'),
   'cardDeck': storeDB.model('cardDeck'),
   'quizScore': storeDB.model('quizScore'),
-  'notification': storeDB.model('notification'),
+  'notifications': storeDB.model('notifications'),
 }
 
 store.dispatch( getAllQuizData() )
@@ -52,6 +53,10 @@ export default class App extends React.Component {
 
   async componentWillUnmount() {
     console.log('Screen exit');
+  }
+
+  componentDidMount() {
+    setNotification();
   }
 
   render() {
