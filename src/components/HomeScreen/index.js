@@ -36,39 +36,28 @@ export class HomeScreen extends React.Component {
   }
 
   handleClick(quiz) {
-    this.animate()
+    this.animate(5);
 
     setTimeout(() => {
-      this.resetAnimation();
-
       this.props.navigation.navigate('Deck', {
         quiz: quiz,
       });
-    }, 3000);
+    }, 5000);
   }
 
-  animate() {
-    this.animatedValue.setValue(0)
-    Animated.timing(
-      this.animatedValue,
-      {
-        toValue: 1,
-        duration: 1000,
-        easing: Easing.linear
-      }
-    ).start(() => this.animate())
-  }
-
-  resetAnimation() {
-    this.animatedValue.setValue(0)
-    Animated.timing(
-      this.animatedValue,
-      {
-        toValue: 0,
-        duration: 0,
-        easing: Easing.linear
-      }
-    ).start()
+  animate(loop) {
+    if (loop > 0) {
+      this.animatedValue.setValue(0)
+      loop -= 1;
+      Animated.timing(
+        this.animatedValue,
+        {
+          toValue: 1,
+          duration: 1000,
+          easing: Easing.linear
+        }
+      ).start(() => this.animate(loop))
+    }
   }
 
   render() {
