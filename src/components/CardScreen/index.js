@@ -7,18 +7,20 @@ import { connect } from 'react-redux';
 import {
     Container,
     Header,
+    Footer,
+    FooterTab,
     Body,
     Content,
     Button,
+    Icon,
     Text,
     Title,
     Label,
     Form,
     Item,
     Input,
-    Grid,
-    Col,
-    Row,
+    Left,
+    Right,
 } from 'native-base';
 
 import * as Actions from '../../store/actions/index'; //Import your actions
@@ -78,24 +80,24 @@ class CardScreen extends Component {
                             <Input onChangeText={answer => this.setState({ answer: answer })} />
                         </Item>
                     </Form>
-
-                    <Grid>
-                        <Col>
-                            <Row>
-                                <Button small full transparent onPress={() => { this.createCard(quiz.id); }}>
-                                    <Text>Create</Text>
-                                </Button>
-                            </Row>
-                        </Col>
-                        <Col>
-                            <Row>
-                                <Button small full transparent onPress={() => { this.exitCardScreen(quiz); }}>
-                                    <Text>Exit</Text>
-                                </Button>
-                            </Row>
-                        </Col>
-                    </Grid>
                 </Content>
+
+                <Footer >
+                    <FooterTab>
+                        <Left>
+                            <Button onPress={() => this.createCard(quiz.id)}>
+                                <Icon name="ios-create" />
+                                <Text>Create</Text>
+                            </Button>
+                        </Left>
+                        <Right>
+                            <Button onPress={() => this.exitCardScreen(quiz)}>
+                                <Icon name="ios-exit" />
+                                <Text>Exit</Text>
+                            </Button>
+                        </Right>
+                    </FooterTab>
+                </Footer>                
             </Container>
         )
     }
