@@ -110,28 +110,23 @@ class StartQuizScreen extends Component {
                             </CardItem>
                         }
                     </Card>
-                    <Card>
-                        {this.state.lastQuestionAnswered &&
-                            <CardItem style={{ justifyContent: 'space-between' }}>
-                                <Left>
-                                    <Button transparent onPress={() => this.setState({ index: 0, correct: 0, lastQuestionAnswered: false })}>
-                                        <Text>Restart Quiz</Text>
-                                        <Icon active name="ios-rewind" />
-                                    </Button>
-                                </Left>
-                                <Right>
-                                    <Button transparent onPress={() => { this.exitStartQuizScreen(quiz); }}>
-                                        <Text>Back to Deck</Text>
-                                        <Icon active name="ios-skip-backward" />
-                                    </Button>
-                                </Right>
-                            </CardItem>
-                        }
-                    </Card>
                 </Content>
 
                 <Footer >
                     <FooterTab>
+                        {this.state.lastQuestionAnswered &&
+                            <Button onPress={() => this.setState({ index: 0, correct: 0, lastQuestionAnswered: false })}>
+                                <Text>Restart Quiz</Text>
+                                <Icon active name="ios-rewind" />
+                            </Button>
+                        }
+                        {this.state.lastQuestionAnswered &&
+                            <Button onPress={() => { this.exitStartQuizScreen(quiz); }}>
+                                <Text>Back to Deck</Text>
+                                <Icon active name="ios-skip-backward" />
+                            </Button>
+                        }
+
                         <Right>
                             <Button onPress={() => { this.handleClick(); }}>
                                 <Text>Next</Text>

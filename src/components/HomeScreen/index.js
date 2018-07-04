@@ -7,6 +7,8 @@ import { connect } from 'react-redux';
 import {
   Container,
   Header,
+  Footer,
+  FooterTab,
   Content,
   Body,
   Button,
@@ -77,19 +79,10 @@ export class HomeScreen extends React.Component {
     return (
       <Container>
         <Header>
-          <Left>
-            <Button
-              transparent
-              onPress={() => this.props.navigation.navigate("Quiz")}
-            >
-              <Icon name="menu" />
-            </Button>
-          </Left>
           <Body>
             <Title>Mobile Flashcards</Title>
           </Body>
         </Header>
-
         <Content>
           <List dataArray={quiz} renderRow={(q) =>
             <Animated.View style={{ opacity: this.state.opacity }}>
@@ -101,6 +94,16 @@ export class HomeScreen extends React.Component {
           </List>
         </Content>
 
+        <Footer >
+          <FooterTab>
+            <Left>
+              <Button onPress={() => this.props.navigation.navigate("Quiz")}>
+                <Icon name="ios-add-circle" />
+                <Text>New Quiz</Text>
+              </Button>
+            </Left>
+          </FooterTab>
+        </Footer>
       </Container>
     );
   }
