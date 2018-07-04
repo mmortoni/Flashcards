@@ -4,15 +4,19 @@ import React, { Component } from 'react';
 import {
     Container,
     Header,
+    Footer,
+    FooterTab,
     Body,
     Content,
     Button,
+    Icon,
     Text,
     Title,
     Label,
     Form,
     Item,
     Input,
+    Left,
 } from 'native-base';
 
 class QuizScreen extends Component {
@@ -61,11 +65,18 @@ class QuizScreen extends Component {
                             <Input onChangeText={title => this.setState({ title })} />
                         </Item>
                     </Form>
-                    
-                    <Button small full transparent onPress={() => { this.createQuiz(); }}>
-                        <Text>Create</Text>
-                    </Button>
                 </Content>
+
+                <Footer >
+                    <FooterTab>
+                        <Left>
+                            <Button onPress={() => this.createQuiz()}>
+                                <Icon name="ios-create" />
+                                <Text>Create</Text>
+                            </Button>
+                        </Left>
+                    </FooterTab>
+                </Footer>
             </Container>
         )
     }
