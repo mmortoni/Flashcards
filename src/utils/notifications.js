@@ -2,12 +2,22 @@
 
 import { Notifications, Permissions } from "expo";
 
-export async function clearLocalNotification() {
-    const data = await DB.notifications.remove({});
+export async function getNotificationPermission() {
+    const { status } = await Permissions.getAsync(
+        Permissions.NOTIFICATIONS
+    );
 
-    Notifications.cancelAllScheduledNotificationsAsync();
+    if (status !== 'granted') {
+        await Permissions.askAsync(Permissions.NOTIFICATIONS);
+    }
+}
 
-    return data;
+export function listenForNotifications() {
+    Notifications.addListener(notification => {
+        if (notification.origin === 'received') {
+            alert(notification.title, notification.body);
+        }
+    });
 }
 
 function buildNotification() {
@@ -27,25 +37,9 @@ function buildNotification() {
 }
 
 export async function setLocalNotification(today) {
-    const data = await DB.notifications.find({});
+    let notification = buildNotification();
 
-    if (data.length === 0) {
-        Permissions.askAsync(Permissions.NOTIFICATIONS).then(({ status }) => {
-            if (status === 'granted') {
-                Notifications.cancelAllScheduledNotificationsAsync();
-
-                let notification = buildNotification();
-
-                Notifications.scheduleLocalNotificationAsync(notification, {
-                    time: today,
-                    repeat: 'day',
-                }).then(result => {
-//                    alert(result);
-                });
-
-                notification.id = "";
-                DB.notifications.add(notification);
-            }
-        });
-    }
+    Notifications.scheduleLocalNotificationAsync(notification, {
+        time: today
+    });
 }
