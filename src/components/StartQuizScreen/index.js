@@ -46,7 +46,6 @@ class StartQuizScreen extends Component {
 
     async exitStartQuizScreen(quiz) {
         const now = new Date();
-        now.setDate(now.getDate() - 1);
  
         await this.props.getAllDeckData({ where: { parentId: quiz.id } });
 

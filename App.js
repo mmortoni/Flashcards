@@ -37,7 +37,7 @@ export default class App extends React.Component {
       fontLoaded: true,
     }
   }
-  
+
   async componentWillMount() {
     await Font.loadAsync({
       'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
@@ -52,14 +52,12 @@ export default class App extends React.Component {
   }
 
   async componentDidMount() {
-    const today = new Date();
-    today.setDate(today.getDate() - 1);
-    today.setMinutes(today.getMinutes() + 1);
+    let today = new Date();
+    today = new Date(today.getTime() + 1000*30);
 
     const data = await DB.quizScore.find({});
 
     getNotificationPermission();
-    //listenForNotifications();
 
     if (data.length === 0) {
       setLocalNotification(today);
