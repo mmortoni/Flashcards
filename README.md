@@ -57,7 +57,7 @@ npm start
 
 ![Quiz](assets/principal.png?raw=true "Quiz - Tela Principal")
 
-## Credits
+## Créditos
 
 *	[NativeBase](http://nativebase.io)
 *	[react-native-store](https://github.com/thewei/react-native-store)
