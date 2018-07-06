@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import {
     Container,
@@ -45,6 +46,12 @@ class CardScreen extends Component {
 
         if (cardDeck) {
             await DB.quiz.updateById({ cardDeck: cardDeck.id }, quizId);
+            
+            this.setState({
+                question: '',
+                answer: '',
+            })
+
             alert('Card successfully created!');
         } else {
             alert('Error creating card!');
@@ -97,10 +104,15 @@ class CardScreen extends Component {
                             </Button>
                         </Right>
                     </FooterTab>
-                </Footer>                
+                </Footer>
             </Container>
         )
     }
+};
+
+CardScreen.propTypes = {
+    quiz: PropTypes.object.isRequired,
+    navigation: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => {

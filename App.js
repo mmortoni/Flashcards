@@ -13,7 +13,7 @@ const cardDeckData = require('./src/utils/cardDeck.json')
 const store = createStore(rootReducer, applyMiddleware(apiMiddleware))
 
 import StoreDB from './src/utils/storeDB'
-import { setNotification } from './src/utils/notifications'
+import { setLocalNotification, clearLocalNotification } from './src/utils/notifications'
 import QuizNavigator from './src/QuizNavigator/index'
 
 const storeDB = new StoreDB({
@@ -27,7 +27,7 @@ window.DB = {
   'notifications': storeDB.model('notifications'),
 }
 
-store.dispatch( getAllQuizData() )
+store.dispatch(getAllQuizData())
 
 export default class App extends React.Component {
   constructor(props) {
@@ -55,12 +55,29 @@ export default class App extends React.Component {
     console.log('Screen exit');
   }
 
-  componentDidMount() {
-    setNotification();
+  async componentDidMount() {
+    const today = new Date();
+    today.setDate(today.getDate() - 1);
+    today.setMinutes(today.getMinutes() + 1);
+
+    const data = await DB.quizScore.find({});
+
+    if (data.length === 0) {
+      await clearLocalNotification();
+      setLocalNotification(today);
+    } else {
+      const todayISOString = today.toISOString().slice(0, 10).replace(/-/g, "");
+      const quizInDay = data.filter(quizScore => quizScore.quizDoneOnDate === todayISOString);
+
+      if(quizInDay.length > 0){
+        await clearLocalNotification();
+        setLocalNotification(today);
+      }
+    }
   }
 
   render() {
-    if (this.state.loading) {
+    if (this.state.fontLoaded) {
       return <Expo.AppLoading />;
     }
 

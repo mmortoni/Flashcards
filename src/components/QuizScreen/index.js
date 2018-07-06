@@ -27,10 +27,10 @@ class QuizScreen extends Component {
             title: ''
         }
 
-        this.createQuiz = this.createQuiz.bind(this);
+        this.createDeck = this.createDeck.bind(this);
     }
 
-    async createQuiz() {
+    async createDeck() {
         const { title } = this.state;
         if (title.trim().length == 0) return;
 
@@ -70,9 +70,9 @@ class QuizScreen extends Component {
                 <Footer >
                     <FooterTab>
                         <Left>
-                            <Button onPress={() => this.createQuiz()}>
+                            <Button onPress={() => this.createDeck()}>
                                 <Icon name="ios-create" />
-                                <Text>Create</Text>
+                                <Text>Create Deck</Text>
                             </Button>
                         </Left>
                     </FooterTab>

@@ -125,17 +125,20 @@ export default class Model {
         var rowsToDelete = [];
         var rows = this.model["rows"];
         var filterResult = this.modelFilter.apply(rows, filter)
+
         for (var row in rows) {
             for (var element in filterResult) {
-                if (rows[row]['_id'] === filterResult[element]['_id'])
+                if (rows[row]['id'] === filterResult[element]['id'])
                     rowsToDelete.push(row);
             }
         }
+
         for (var i in rowsToDelete) {
             var row = rowsToDelete[i];
             results.push(this.model["rows"][row]);
             delete this.model["rows"][row];
         }
+        
         this.database[this.modelName] = this.model;
         await AsyncStorage.setItem(this.dbName, JSON.stringify(this.database));
 
@@ -158,7 +161,7 @@ export default class Model {
         const rows = this.model["rows"].byId;
         const results = this.modelFilter.apply(rows, filter);
 
-        return results.length ? results : null;
+        return results.length ? results : [];
     }
 
     async findById(id) {

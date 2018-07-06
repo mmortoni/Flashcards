@@ -1,9 +1,14 @@
 'use strict';
 
 import { Notifications, Permissions } from "expo";
-import { AsyncStorage } from "react-native";
 
-import { ASYNCSTORAGE } from '../constants/constants'
+export async function clearLocalNotification() {
+    const data = await DB.notifications.remove({});
+
+    Notifications.cancelAllScheduledNotificationsAsync();
+
+    return data;
+}
 
 function buildNotification() {
     return {
@@ -13,31 +18,34 @@ function buildNotification() {
             sound: true
         },
         android: {
-            sound: true
+            sound: true,
+            priority: "high",
+            sticky: false,
+            vibrate: true
         },
     };
 }
 
-export async function setNotification() {
-    const data = JSON.parse(await AsyncStorage.getItem(ASYNCSTORAGE.NOTIFICATIONS_KEY));
-    if (data !== null) return;
+export async function setLocalNotification(today) {
+    const data = await DB.notifications.find({});
 
-    const { status } = Permissions.askAsync(Permissions.NOTIFICATIONS)
-    if (status !== 'granted') return;
+    if (data.length === 0) {
+        Permissions.askAsync(Permissions.NOTIFICATIONS).then(({ status }) => {
+            if (status === 'granted') {
+                Notifications.cancelAllScheduledNotificationsAsync();
 
-    Notifications.cancelAllScheduledNotificationsAsync()
+                let notification = buildNotification();
 
-    let today = new Date();
-    today.setDate(today.getDate());
-    today.setHours(13, 0, 0);
+                Notifications.scheduleLocalNotificationAsync(notification, {
+                    time: today,
+                    repeat: 'day',
+                }).then(result => {
+//                    alert(result);
+                });
 
-    Notifications.scheduleLocalNotificationAsync(
-        buildNotification(),
-        {
-            time: today,
-            repeat: 'day',
-        }
-    )
-
-    AsyncStorage.setItem(ASYNCSTORAGE.NOTIFICATIONS_KEY, JSON.stringify(true))
+                notification.id = "";
+                DB.notifications.add(notification);
+            }
+        });
+    }
 }

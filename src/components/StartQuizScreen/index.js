@@ -30,7 +30,7 @@ class StartQuizScreen extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { index: 0, lastQuestionAnswered: false }
+        this.state = { index: 0, restart: false, lastQuestionAnswered: false }
         this.question = Array(this.props.navigation.state.params.cardDeck.length).fill(0);
 
         this.handleClick = this.handleClick.bind(this);
@@ -45,7 +45,33 @@ class StartQuizScreen extends Component {
     }
 
     async exitStartQuizScreen(quiz) {
+        const now = new Date();
+        now.setDate(now.getDate() - 1);
+ 
         await this.props.getAllDeckData({ where: { parentId: quiz.id } });
+
+        const result = await DB.quizScore.find({ where: { parentId: quiz.id } });
+
+        if (result !== null) {
+            await DB.quizScore.updateById({
+                quizDoneOnDate: now.toISOString().slice(0, 10).replace(/-/g, ""),
+                totalQuizQuestions: this.question.length,
+                correctScore: this.question.reduce((sum, value) => value == 0 ? sum += 1 : sum += 0, 0),
+                incorrectScore: this.question.reduce((sum, value) => value == 1 ? sum += 1 : sum += 0, 0),
+                userResetQuiz: this.state.restart
+            }, result.id);
+        } else {
+            await DB.quizScore.add({
+                id: '',
+                parentId: quiz.id,
+                quizDoneOnDate: now.toISOString().slice(0, 10).replace(/-/g, ""),
+                totalQuizQuestions: this.question.length,
+                correctScore: this.question.reduce((sum, value) => value == 0 ? sum += 1 : sum += 0, 0),
+                incorrectScore: this.question.reduce((sum, value) => value == 1 ? sum += 1 : sum += 0, 0),
+                userResetQuiz: this.state.restart
+            });
+        }
+
         this.props.navigation.navigate('Deck', {
             quiz: quiz,
         });
@@ -115,7 +141,7 @@ class StartQuizScreen extends Component {
                 <Footer >
                     <FooterTab>
                         {this.state.lastQuestionAnswered &&
-                            <Button onPress={() => this.setState({ index: 0, correct: 0, lastQuestionAnswered: false })}>
+                            <Button onPress={() => this.setState({ index: 0, restart: true, lastQuestionAnswered: false })}>
                                 <Text>Restart Quiz</Text>
                                 <Icon active name="ios-rewind" />
                             </Button>
@@ -143,8 +169,6 @@ class StartQuizScreen extends Component {
 const mapStateToProps = (state) => {
     return {
         pending: state.ui.pending,
-        data: state.quiz,
-        cardDeck: state.deck,
     }
 }
 
