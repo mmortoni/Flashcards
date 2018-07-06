@@ -13,7 +13,7 @@ const cardDeckData = require('./src/utils/cardDeck.json')
 const store = createStore(rootReducer, applyMiddleware(apiMiddleware))
 
 import StoreDB from './src/utils/storeDB'
-import { setLocalNotification, clearLocalNotification } from './src/utils/notifications'
+import { setLocalNotification, getNotificationPermission, listenForNotifications } from './src/utils/notifications'
 import QuizNavigator from './src/QuizNavigator/index'
 
 const storeDB = new StoreDB({
@@ -37,7 +37,7 @@ export default class App extends React.Component {
       fontLoaded: true,
     }
   }
-
+  
   async componentWillMount() {
     await Font.loadAsync({
       'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
@@ -51,10 +51,6 @@ export default class App extends React.Component {
     await DB.cardDeck.multiAdd(cardDeckData)
   }
 
-  async componentWillUnmount() {
-    console.log('Screen exit');
-  }
-
   async componentDidMount() {
     const today = new Date();
     today.setDate(today.getDate() - 1);
@@ -62,15 +58,16 @@ export default class App extends React.Component {
 
     const data = await DB.quizScore.find({});
 
+    getNotificationPermission();
+    //listenForNotifications();
+
     if (data.length === 0) {
-      await clearLocalNotification();
       setLocalNotification(today);
     } else {
       const todayISOString = today.toISOString().slice(0, 10).replace(/-/g, "");
       const quizInDay = data.filter(quizScore => quizScore.quizDoneOnDate === todayISOString);
 
-      if(quizInDay.length > 0){
-        await clearLocalNotification();
+      if (quizInDay.length > 0) {
         setLocalNotification(today);
       }
     }
