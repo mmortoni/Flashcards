@@ -170,4 +170,3 @@ class Filter {
 }
 
 export default Filter;
-//module.exports = Filter;

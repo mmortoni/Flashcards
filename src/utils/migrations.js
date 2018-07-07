@@ -10,4 +10,3 @@ const Migrations = [
 ];
 
 export default Migrations;
-//module.exports = Migrations;
