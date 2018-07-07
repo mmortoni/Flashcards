@@ -46,12 +46,12 @@ class StartQuizScreen extends Component {
 
     async exitStartQuizScreen(quiz) {
         const now = new Date();
- 
+
         await this.props.getAllDeckData({ where: { parentId: quiz.id } });
 
         const result = await DB.quizScore.find({ where: { parentId: quiz.id } });
 
-        if (result !== null) {
+        if (result.length > 0) {
             await DB.quizScore.updateById({
                 quizDoneOnDate: now.toISOString().slice(0, 10).replace(/-/g, ""),
                 totalQuizQuestions: this.question.length,
@@ -100,27 +100,29 @@ class StartQuizScreen extends Component {
                         </CardItem>
                     </Card>
                     <Card>
-                        <CardItem>
-                            <Left>
-                                <Button transparent
-                                    onPress={() =>
-                                        ActionSheet.show(
-                                            {
-                                                options: BUTTONS,
-                                                title: cardDeck[this.state.index].answer
-                                            },
-                                            buttonIndex => {
-                                                this.question[this.state.index] = buttonIndex;
-                                                this.setState({ lastQuestionAnswered: this.state.index + 1 == cardDeck.length });
-                                            }
-                                        )
-                                    }
-                                >
-                                    <Text>Show Answer</Text>
-                                    <Icon name='ios-eye' />
-                                </Button>
-                            </Left>
-                        </CardItem>
+                        {!this.state.lastQuestionAnswered &&
+                            <CardItem>
+                                <Left>
+                                    <Button transparent
+                                        onPress={() =>
+                                            ActionSheet.show(
+                                                {
+                                                    options: BUTTONS,
+                                                    title: cardDeck[this.state.index].answer
+                                                },
+                                                buttonIndex => {
+                                                    this.question[this.state.index] = buttonIndex;
+                                                    this.setState({ lastQuestionAnswered: this.state.index + 1 == cardDeck.length });
+                                                }
+                                            )
+                                        }
+                                    >
+                                        <Text>Show Answer</Text>
+                                        <Icon name='ios-eye' />
+                                    </Button>
+                                </Left>
+                            </CardItem>
+                        }
                     </Card>
                     <Card>
                         {this.state.lastQuestionAnswered &&
@@ -130,7 +132,7 @@ class StartQuizScreen extends Component {
                                     <Icon active name="ios-stats" />
 
                                     <Text>Well done—you've worked very hard!</Text>
-                                    <Text>Your score is: {score}%</Text>
+                                    <Text>Your score is: {score.toFixed(2)}%</Text>
                                 </Body>
                             </CardItem>
                         }

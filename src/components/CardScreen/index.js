@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 
 import {
     Container,
@@ -108,11 +107,6 @@ class CardScreen extends Component {
             </Container>
         )
     }
-};
-
-CardScreen.propTypes = {
-    quiz: PropTypes.object.isRequired,
-    navigation: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => {

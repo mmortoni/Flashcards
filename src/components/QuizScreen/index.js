@@ -36,7 +36,7 @@ class QuizScreen extends Component {
 
         const result = await DB.quiz.find({ where: { title: title } });
 
-        if (result !== null) {
+        if (result.length > 0) {
             alert('Title already exists!');
             return;
         }
