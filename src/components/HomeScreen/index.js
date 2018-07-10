@@ -22,7 +22,7 @@ import {
 
 import * as Actions from '../../store/actions/index';
 
-const ANIMATION_LOOP = 5;
+const ANIMATION_LOOP = 3;
 const ANIMATION_DURATION = 1000;
 
 export class HomeScreen extends React.Component {

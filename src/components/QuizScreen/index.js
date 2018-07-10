@@ -43,7 +43,7 @@ class QuizScreen extends Component {
 
         const quiz = await DB.quiz.add({ id: '', title: title, cardDeck: [] });
 
-        this.props.navigation.navigate('Card', {
+        this.props.navigation.navigate('Deck', {
             quiz: quiz,
         });
     }
