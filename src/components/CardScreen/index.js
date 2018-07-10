@@ -23,7 +23,7 @@ import {
     Right,
 } from 'native-base';
 
-import * as Actions from '../../store/actions/index'; //Import your actions
+import * as Actions from '../../store/actions/index';
 
 class CardScreen extends Component {
     constructor(props) {
@@ -41,11 +41,12 @@ class CardScreen extends Component {
         const { question, answer } = this.state;
         if (question.trim().length == 0 || answer.trim().length == 0) return;
 
+        // para não onerar o código vai direto na API.
         const cardDeck = await DB.cardDeck.add({ id: '', question: question, answer: answer, parentId: quizId });
 
         if (cardDeck) {
             await DB.quiz.updateById({ cardDeck: cardDeck.id }, quizId);
-            
+
             this.setState({
                 question: '',
                 answer: '',
@@ -58,7 +59,9 @@ class CardScreen extends Component {
     }
 
     async exitCardScreen(quiz) {
+        // o state é atualizado uma única vez.
         await this.props.getAllDeckData({ where: { parentId: quiz.id } });
+        
         this.props.navigation.navigate('Deck', {
             quiz: quiz,
         });
@@ -111,9 +114,7 @@ class CardScreen extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        pending: state.ui.pending,
-        data: state.quiz,
-        cardDeck: state.deck,
+        deck: state.deck,
     }
 }
 

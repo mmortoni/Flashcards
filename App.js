@@ -13,7 +13,7 @@ const cardDeckData = require('./src/utils/cardDeck.json')
 const store = createStore(rootReducer, applyMiddleware(apiMiddleware))
 
 import StoreDB from './src/utils/storeDB'
-import { setLocalNotification, getNotificationPermission, listenForNotifications } from './src/utils/notifications'
+import { setLocalNotification, clearLocalNotification } from './src/utils/notifications'
 import QuizNavigator from './src/QuizNavigator/index'
 
 const storeDB = new StoreDB({
@@ -51,24 +51,8 @@ export default class App extends React.Component {
     await DB.cardDeck.multiAdd(cardDeckData)
   }
 
-  async componentDidMount() {
-    let today = new Date();
-    today = new Date(today.getTime() + 1000*30);
-
-    const data = await DB.quizScore.find({});
-
-    getNotificationPermission();
-
-    if (data.length === 0) {
-      setLocalNotification(today);
-    } else {
-      const todayISOString = today.toISOString().slice(0, 10).replace(/-/g, "");
-      const quizInDay = data.filter(quizScore => quizScore.quizDoneOnDate === todayISOString);
-
-      if (quizInDay.length > 0) {
-        setLocalNotification(today);
-      }
-    }
+  componentDidMount() {
+    setLocalNotification()
   }
 
   render() {

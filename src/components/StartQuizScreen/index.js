@@ -22,6 +22,8 @@ import {
     ActionSheet,
 } from 'native-base';
 
+import { setLocalNotification, clearLocalNotification } from '../../utils/notifications'
+
 import * as Actions from '../../store/actions/index';
 
 const BUTTONS = ['Correct', 'Incorrect'];
@@ -45,15 +47,27 @@ class StartQuizScreen extends Component {
     }
 
     async exitStartQuizScreen(quiz) {
-        const now = new Date();
-
         await this.props.getAllDeckData({ where: { parentId: quiz.id } });
+
+        await this.saveOrUpdate(quiz);
+        
+        // Notification reschedule
+        await clearLocalNotification();
+        await setLocalNotification();
+
+        this.props.navigation.navigate('Deck', {
+            quiz: quiz,
+        });
+    }
+
+    async saveOrUpdate (quiz) {
+        const dateISOString = new Date().toISOString().slice(0, 10).replace(/-/g, "");
 
         const result = await DB.quizScore.find({ where: { parentId: quiz.id } });
 
         if (result.length > 0) {
             await DB.quizScore.updateById({
-                quizDoneOnDate: now.toISOString().slice(0, 10).replace(/-/g, ""),
+                quizDoneOnDate: dateISOString,
                 totalQuizQuestions: this.question.length,
                 correctScore: this.question.reduce((sum, value) => value == 0 ? sum += 1 : sum += 0, 0),
                 incorrectScore: this.question.reduce((sum, value) => value == 1 ? sum += 1 : sum += 0, 0),
@@ -63,17 +77,13 @@ class StartQuizScreen extends Component {
             await DB.quizScore.add({
                 id: '',
                 parentId: quiz.id,
-                quizDoneOnDate: now.toISOString().slice(0, 10).replace(/-/g, ""),
+                quizDoneOnDate: dateISOString,
                 totalQuizQuestions: this.question.length,
                 correctScore: this.question.reduce((sum, value) => value == 0 ? sum += 1 : sum += 0, 0),
                 incorrectScore: this.question.reduce((sum, value) => value == 1 ? sum += 1 : sum += 0, 0),
                 userResetQuiz: this.state.restart
             });
         }
-
-        this.props.navigation.navigate('Deck', {
-            quiz: quiz,
-        });
     }
 
     render() {

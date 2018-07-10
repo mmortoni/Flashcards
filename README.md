@@ -17,6 +17,9 @@ Para executar este aplicativo, você precisará do seguinte:
 * Virtual Device: Nexus 5X API 24 - 1080 × 1920: 420dpi	- Android 7.0 (Google Play)
 * Android SDK 1.16
 
+### Testes
+O aplicativo foi testado em emulador Android e iOS com êxito.
+
 ### Início
 
 1. Clone este repositório: `git clone https://github.com/mmortoni/Flashcards.git`
