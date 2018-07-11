@@ -41,7 +41,6 @@ class CardScreen extends Component {
         const { question, answer } = this.state;
         if (question.trim().length == 0 || answer.trim().length == 0) return;
 
-        // para não onerar o código vai direto na API.
         const cardDeck = await DB.cardDeck.add({ id: '', question: question, answer: answer, parentId: quizId });
 
         if (cardDeck) {
@@ -58,10 +57,11 @@ class CardScreen extends Component {
         }
     }
 
+    async componentWillUnmount() {
+        await this.props.getAllDeckData({ where: { parentId: this.props.navigation.state.params.quiz.id } });
+    }
+
     async exitCardScreen(quiz) {
-        // o state é atualizado uma única vez.
-        await this.props.getAllDeckData({ where: { parentId: quiz.id } });
-        
         this.props.navigation.navigate('Deck', {
             quiz: quiz,
         });
