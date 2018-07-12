@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
+    View,
     StyleSheet,
     Animated
 } from 'react-native';
@@ -31,17 +32,17 @@ import { setLocalNotification, clearLocalNotification } from '../../utils/notifi
 
 import * as Actions from '../../store/actions/index';
 
-const BUTTONS = ['Correct', 'Incorrect'];
-
 class StartQuizScreen extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { index: 0, 
-            restart: false, 
+        this.state = {
+            index: 0,
+            restart: false,
             lastQuestionAnswered: false,
             card: 0,
-         }
+            answer: 0,
+        }
         this.question = Array(this.props.navigation.state.params.cardDeck.length).fill(0);
 
         this.handleClick = this.handleClick.bind(this);
@@ -89,12 +90,18 @@ class StartQuizScreen extends Component {
         }
     }
 
-    async handleClick() {
-        const { cardDeck } = this.props.navigation.state.params;
+    async handleClick(cardDeck) {
+        this.setState({ answer: 0 });
 
         if (this.state.index < cardDeck.length - 1) {
             this.setState({ index: this.state.index + 1 })
         }
+    }
+
+    answerClick(buttonIndex, cardDeck) {
+        this.setState({ answer: buttonIndex });
+        this.question[this.state.index] = buttonIndex;
+        this.setState({ lastQuestionAnswered: this.state.index + 1 == cardDeck.length });
     }
 
     async exitStartQuizScreen(quiz) {
@@ -149,7 +156,7 @@ class StartQuizScreen extends Component {
                 { rotateY: this.backInterpolate }
             ]
         }
-        const showQuestionAnswer = this.state.card === 0 ? 'ANSWER': 'QUESTION';
+        const showQuestionAnswer = this.state.card === 0 ? 'ANSWER' : 'QUESTION';
         const score = this.question.reduce(
             (sum, value) => sum += value == 0 ? 1 : 0,
             0) / (this.question.length / 100);
@@ -166,7 +173,7 @@ class StartQuizScreen extends Component {
                 <Content padder>
                     <Card>
                         <CardItem header>
-                            <Text disabled style={styles.flipText}>QUIZ</Text>
+                            <Text disabled style={styles.flipText}>Quiz</Text>
                         </CardItem>
 
                         <CardItem>
@@ -178,8 +185,8 @@ class StartQuizScreen extends Component {
                                 <Animated.View style={[styles.flipCard, styles.flipCardBack, backAnimatedStyle, { opacity: this.backOpacity }]}>
                                     <Text disabled style={styles.flipText}>{cardDeck[this.state.index].answer}</Text>
                                     <Segment>
-                                        <Button first active><Text>{BUTTONS[0]}</Text></Button>
-                                        <Button last><Text>{BUTTONS[1]}</Text></Button>
+                                        <Button active={this.state.answer == 0} onPress={() => { this.answerClick(0, cardDeck); }} first><Text>Correct</Text></Button>
+                                        <Button active={this.state.answer == 1} onPress={() => { this.answerClick(1, cardDeck); }} last ><Text>Incorrect</Text></Button>
                                     </Segment>
                                 </Animated.View>
                             </Body>
@@ -226,7 +233,7 @@ class StartQuizScreen extends Component {
                         }
 
                         <Right>
-                            <Button onPress={() => { this.handleClick(); }}>
+                            <Button onPress={() => { this.handleClick(cardDeck); }}>
                                 <Text>Next</Text>
                                 <Icon name='ios-arrow-forward' />
                             </Button>
@@ -258,21 +265,22 @@ const styles = StyleSheet.create({
     },
     flipCard: {
         width: 360,
-        height: 100,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'blue',
-        backfaceVisibility: 'hidden',
+        height: 150,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#fff",
+        backfaceVisibility: "hidden",
     },
     flipCardBack: {
-        backgroundColor: "red",
+        backgroundColor: "#fff",
         position: "absolute",
         top: 0,
     },
     flipText: {
         width: 360,
+        height: 50,
         fontSize: 20,
-        color: 'white',
-        fontWeight: 'bold',
+        color: "black",
+        fontWeight: "bold",
     }
 });
