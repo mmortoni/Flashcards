@@ -29,36 +29,48 @@ class CardScreen extends Component {
     constructor(props) {
         super(props);
 
+        const card = this.props.navigation.state.params.card;
+
         this.state = {
-            question: '',
-            answer: '',
+            question: card ? card.question : '',
+            answer: card ? card.answer : '',
         }
 
-        this.createCard = this.createCard.bind(this);
-    }
-
-    async createCard(quizId) {
-        const { question, answer } = this.state;
-        if (question.trim().length == 0 || answer.trim().length == 0) return;
-
-        const cardDeck = await DB.cardDeck.add({ id: '', question: question, answer: answer, parentId: quizId });
-
-        if (cardDeck) {
-            await DB.quiz.updateById({ cardDeck: cardDeck.id }, quizId);
-
-            this.setState({
-                question: '',
-                answer: '',
-            })
-
-            alert('Card successfully created!');
-        } else {
-            alert('Error creating card!');
-        }
+        this.editCard = this.editCard.bind(this);
     }
 
     async componentWillUnmount() {
         await this.props.getAllDeckData({ where: { parentId: this.props.navigation.state.params.quiz.id } });
+    }
+
+    async editCard(quizId) {
+        const card = this.props.navigation.state.params.card;
+        const { question, answer } = this.state;
+        let cardDeck;
+        if (question.trim().length == 0 || answer.trim().length == 0) return;
+
+        if (card) {
+            cardDeck = await DB.cardDeck.updateById({ question: question, answer: answer }, card.id);
+        } else {
+            cardDeck = await DB.cardDeck.add({ id: '', question: question, answer: answer, parentId: quizId });
+        }
+
+        if (cardDeck) {
+            if (card) {
+                alert('Card successfully updated!');
+            } else {
+                await DB.quiz.updateById({ cardDeck: cardDeck.id }, quizId);
+
+                this.setState({
+                    question: '',
+                    answer: '',
+                })
+
+                alert('Card successfully created!');
+            }
+        } else {
+            alert('Error creating card!');
+        }
     }
 
     async exitCardScreen(quiz) {
@@ -69,7 +81,7 @@ class CardScreen extends Component {
 
     render() {
         const { question, answer } = this.state;
-        const { quiz } = this.props.navigation.state.params;
+        const { quiz, card } = this.props.navigation.state.params;
 
         return (
             <Container>
@@ -82,11 +94,11 @@ class CardScreen extends Component {
                     <Form>
                         <Item>
                             <Label>Question:</Label>
-                            <Input onChangeText={question => this.setState({ question: question })} />
+                            <Input onChangeText={(question) => this.setState({ question: question })} value={this.state.question} />
                         </Item>
                         <Item>
                             <Label>Answer:</Label>
-                            <Input onChangeText={answer => this.setState({ answer: answer })} />
+                            <Input onChangeText={(answer) => this.setState({ answer: answer })} value={this.state.answer} />
                         </Item>
                     </Form>
                 </Content>
@@ -94,9 +106,9 @@ class CardScreen extends Component {
                 <Footer >
                     <FooterTab>
                         <Left>
-                            <Button onPress={() => this.createCard(quiz.id)}>
+                            <Button onPress={() => this.editCard(quiz.id)}>
                                 <Icon name="ios-create" />
-                                <Text>Create</Text>
+                                <Text>{card ? 'Edit' : 'Create'}</Text>
                             </Button>
                         </Left>
                         <Right>

@@ -17,6 +17,7 @@ import {
   Title,
   List,
   ListItem,
+  Right,
   Left,
 } from 'native-base'
 
@@ -40,6 +41,12 @@ export class HomeScreen extends React.Component {
 
   async componentDidMount() {
     await this.props.getAllQuizData();
+  }
+
+  async editQuiz(quiz) {
+    this.props.navigation.navigate('Quiz', {
+      quiz: quiz,
+    });
   }
 
   handleClick(quiz) {
@@ -86,8 +93,22 @@ export class HomeScreen extends React.Component {
         <Content>
           <List dataArray={quiz} renderRow={(q) =>
             <Animated.View style={{ opacity: this.state.opacity }}>
-              <ListItem style={{ marginLeft: 0, paddingLeft: 15 }} button={true} onPress={() => { this.handleClick(q) }}>
-                <Text>{q.title + ' - ' + q.cards} cards</Text>
+              <ListItem icon>
+                <Left>
+                  <Button style={{ backgroundColor: "#a9a9a9" }} onPress={() => { this.handleClick(q) }}>
+                    <Icon active name="ios-arrow-dropright" />
+                  </Button>
+                </Left>
+
+                <Body>
+                  <Text>{q.title + ' - ' + q.cards} cards</Text>
+                </Body>
+
+                <Right>
+                  <Button transparent onPress={() => { this.editQuiz(q) }}>
+                    <Icon active name="ios-redo" />
+                  </Button>
+                </Right>
               </ListItem>
             </Animated.View>
           }>
@@ -97,7 +118,7 @@ export class HomeScreen extends React.Component {
         <Footer >
           <FooterTab>
             <Left>
-              <Button onPress={() => this.props.navigation.navigate("Quiz")}>
+              <Button onPress={() => this.props.navigation.navigate("Quiz", {quiz: null})}>
                 <Icon name="ios-add-circle" />
                 <Text>New Quiz</Text>
               </Button>
