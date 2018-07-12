@@ -26,10 +26,18 @@ class DeckScreen extends Component {
         super(props);
 
         this.handleClick = this.handleClick.bind(this);
+        this.cardEdit = this.cardEdit.bind(this);
     }
 
     async componentDidMount() {
         await this.props.getAllDeckData({ where: { parentId: this.props.navigation.state.params.quiz.id } });
+    }
+
+    cardEdit(quiz, card) {
+        this.props.navigation.navigate('Card', {
+            quiz: quiz,
+            card: card,
+        });
     }
 
     async handleClick(navigation, quiz, cardDeck) {
@@ -61,7 +69,7 @@ class DeckScreen extends Component {
                     {hasCardDeck &&
                         <List dataArray={cardDeck}
                             renderRow={(c) =>
-                                <ListItem>
+                                <ListItem button={true} onPress={() => { this.cardEdit(quiz, c) }}>
                                     <Text>{c.question}</Text>
                                 </ListItem>
                             }>
@@ -76,16 +84,16 @@ class DeckScreen extends Component {
                             <Icon name='ios-create' />
                         </Button>
                         {hasCardDeck &&
-                        <Button onPress={() => { this.handleClick('StartQuiz', quiz, cardDeck); }}>
-                            <Text>Start Quiz</Text>
-                            <Icon name='ios-fastforward' />
-                        </Button>
+                            <Button onPress={() => { this.handleClick('StartQuiz', quiz, cardDeck); }}>
+                                <Text>Start Quiz</Text>
+                                <Icon name='ios-fastforward' />
+                            </Button>
                         }
                         {!hasCardDeck &&
-                        <Button disabled onPress={() => { this.handleClick('StartQuiz', quiz, cardDeck); }}>
-                            <Text>Start Quiz</Text>
-                            <Icon name='ios-fastforward' />
-                        </Button>
+                            <Button disabled onPress={() => { this.handleClick('StartQuiz', quiz, cardDeck); }}>
+                                <Text>Start Quiz</Text>
+                                <Icon name='ios-fastforward' />
+                            </Button>
                         }
                         <Button onPress={() => { this.handleClick('Home', quiz, []); }}>
                             <Text>Home</Text>
