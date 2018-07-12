@@ -57,12 +57,6 @@ class CardScreen extends Component {
         }
     }
 
-/*
-Para fins de nomeação
-
-Quando um novo cartão (pergunta e resposta) é criado, notei que ao voltar para o deck individual o estado com o novo numero de questões não é atualizado.
-Você pode dar uma analisada tanto nos reducers como no middleware para ter uma ideia melhor de como os dados estão chegando após o dispactch dessa action.
-*/
     async componentWillUnmount() {
         await this.props.getAllDeckData({ where: { parentId: this.props.navigation.state.params.quiz.id } });
     }
