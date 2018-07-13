@@ -17,6 +17,7 @@ import {
     Text,
     ListItem,
     Icon,
+    Right,
 } from 'native-base';
 
 import * as Actions from '../../store/actions/index'; //Import your actions
@@ -69,8 +70,16 @@ class DeckScreen extends Component {
                     {hasCardDeck &&
                         <List dataArray={cardDeck}
                             renderRow={(c) =>
-                                <ListItem button={true} onPress={() => { this.cardEdit(quiz, c) }}>
-                                    <Text>{c.question}</Text>
+                                <ListItem icon>
+                                    <Body>
+                                        <Text>{c.question}</Text>
+                                    </Body>
+
+                                    <Right>
+                                        <Button transparent onPress={() => { this.cardEdit(quiz, c) }}>
+                                            <Icon active name="ios-redo" />
+                                        </Button>
+                                    </Right>
                                 </ListItem>
                             }>
                         </List>
